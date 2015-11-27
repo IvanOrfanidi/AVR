@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<infocenter_data version="1.0">
+  <iar_name>STK500</iar_name>
+  <iar_description>This example uses the Atmel AVR STK500 evaluation board together with AVR JTAGICE mkII.</iar_description>
+  <iar_curdir>$CUR_DIR$</iar_curdir>
+</infocenter_data>

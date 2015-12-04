@@ -10,12 +10,7 @@
 
 	int DS18B20_Start_Converts(void);
 	int DS18B20_Temperature(char *ptrTemperature);
+        
 
-
-
-enum {
-
-	OK_CONNECT=0, ERROR_CONNECT
-};
 
 #endif

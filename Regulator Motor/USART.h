@@ -22,9 +22,7 @@
 	#define PARITY_MODE0    'N'
 	#define STOP_BIT0       1
 
-
 	#define USART0_DELAY_MS 1
-
 
 	#define UPE0 2
 	#define DOR0 3

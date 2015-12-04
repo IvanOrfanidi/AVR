@@ -34,7 +34,7 @@ unsigned char DS18B20_init(void)
 
 	OK_Flag = (PIN_DS18B20 & (1 << DS18B20)); // ловим импульс присутствия датчика
 	// если OK_Flag = 0 датчик подключен, OK_Flag = 1 датчик не подключен
-	_delay_us(422);
+	_delay_us(500);
 
 	return OK_Flag;
 }
@@ -87,15 +87,16 @@ void write_18b20(unsigned char dat)
 
 int DS18B20_Start_Converts(void)
 {
-	if(OK_Flag == 1) // если датчик не ответил
-		return ERROR_CONNECT;
+    if(OK_Flag == 1) {// если датчик не ответил
+		return 1;
+    }
 
 	DS18B20_init();        // инициализация DS18B20
 
 	write_18b20(0xCC);     // проверка кода датчика
 	write_18b20(0x44);     // запуск температурного преобразования
 
-	return OK_CONNECT;
+	return 0;
 }
 
 	
@@ -144,8 +145,8 @@ int DS18B20_Temperature(char *ptrTemperature)
 	ptrTemperature[1]=tempint2;
 	ptrTemperature[2]=tempint3;
 	ptrTemperature[3]=temppoint1;
-
-	return OK_CONNECT;
+        ptrTemperature[4]=0;
+	return 0;
 
 }
 

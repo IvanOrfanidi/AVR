@@ -26,6 +26,7 @@
 void usart0_write_str(char *pData_Usart0)
 {
 	while(usart0_busy_wait());
+        usart0_clear_tx_buffer();
 
 	uint16_t i=0;
 

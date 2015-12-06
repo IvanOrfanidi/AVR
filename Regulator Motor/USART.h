@@ -13,7 +13,7 @@
 
 	#include "main.h"
 
-	#define RX_BUFFER_SIZE0 1
+	//#define RX_BUFFER_SIZE0 0
 	#define TX_BUFFER_SIZE0 64
 
 	#define BAUD_RATE0 9600

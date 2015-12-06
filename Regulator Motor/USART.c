@@ -13,10 +13,11 @@
 
 	uint8_t rx_status0;
 	uint8_t tx_status0;
-
+#if RX_BUFFER_SIZE0
 	uint8_t rx_rd_counter_index0;
 	uint8_t rx_counter_index0;
 	char rx_buffer0[RX_BUFFER_SIZE0];
+#endif
 
 	uint8_t tx_wr_counter_index0;
 	uint8_t tx_counter_index0;
@@ -191,7 +192,7 @@ __interrupt void USART_UDRE(void)
 		}
 	
 }
-
+#if RX_BUFFER_SIZE0
 #pragma vector=USART_RXC_vect
 __interrupt void USART_RXC(void)
 {
@@ -237,6 +238,7 @@ uint8_t usart0_rx_len()
 		return len;
 }
 
+#endif
 
 uint8_t rx_error0()
 {
@@ -257,14 +259,14 @@ void usart0_clear_tx_buffer()
 
 }
 
-
+#if RX_BUFFER_SIZE0
 void usart0_clear_rx_buffer()
 {
 	rx_rd_counter_index0=0;
 	rx_counter_index0=0;
 
 }
-
+#endif
 
 uint8_t usart0_busy_wait(void)
 {

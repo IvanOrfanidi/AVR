@@ -19,3 +19,6 @@
 *.map
 *.a90
 *.r90
+/Regulator Motor/Debug/Exe/RegulatorMotor.a90
+/Regulator Motor/Debug/Obj/*.r90
+/Regulator Motor/settings

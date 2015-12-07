@@ -23,9 +23,10 @@
 
   #define BUZ_ON    PORTD |= 0x18
   #define BUZ_OFF   PORTD &= ~0x18
+  #define BUZ_TOGGLE  PORTD ^= 0x18
 
-  #define RELAY_ON    PORTD |= RELAY
-  #define RELAY_OFF   PORTD &= ~RELAY
+  #define RELAY_OFF  PORTD |= RELAY
+  #define RELAY_ON   PORTD &= ~RELAY
 
   #define GetIrStatus() (!(PIND & (1<<PD0)))
   #define GetButStatus() (!(PIN_BUT & BUT))
@@ -33,17 +34,22 @@
   #define StartConvAdc() ADCSR |= (1<<ADSC)  
 
 
-  #define MAX_TEMPERATUR  330
-  #define DELTA_TEMPERATUR  30
+  #define MAX_TEMPERATUR      330   //Максимальная температура двигателя при котором сгенериться ALARM.
+  #define DELTA_TEMPERATUR    30    //Дельта на охлаждения двигателя при котором сбросится ALARM.
 
+typedef enum STATUS_DRIVE {
+  MOVE = 0,
+  STOP = 1,
+} STATUS_DRIVE;
 
-uint8_t fStop = 1;
+STATUS_DRIVE eStop = STOP;
 int8_t fAlarm = 0;   //Флаг Аварии датчика температуры и перегрева двигателя.
 unsigned char AdcBuf = 0;
 
 char strTemperature[5];
 int iTemperature;
 
+void BuzzerHandler(void);
 
 
 void Init(void)
@@ -67,7 +73,7 @@ void Init(void)
   //Timer1 initialization.
   TCCR1B=(1<<CS12)|(0<<CS11)|(1<<CS10);	
   //TCCR1B=(0<<CS12)|(0<<CS11)|(0<<CS10);	//Timer1 clock off.
-  OCR1A=7816;
+  OCR1A=7816;           //Interrupt 1 sec.
   TIMSK|=(1<<OCIE1A);	//Interrupt Timer1 COMPA.
   ////////////////////////////////////////////////////////////////////
   
@@ -95,7 +101,8 @@ void InitADC(void)
 int main( void )
 {
   __disable_interrupt();
-  uint8_t fStopOld;
+  STATUS_DRIVE eStopOld;
+  uint8_t fStatusAlarmOld = 0;
   Init();
   
   //InitADC();
@@ -106,64 +113,82 @@ int main( void )
   
   usart0_write_str("-=START=-\r");
   
-  StartConvAdc();
+  //StartConvAdc();
   
   while(1)
   {
     __watchdog_reset();		//Reset WATCHDOG.
     
-    if( (GetIrStatus() || GetButStatus()) && (!(fAlarm)) ) {
+   BuzzerHandler();     //Обработчик зуммера.
+   
+//ЕСЛИ ЕСТЬ ТРЕВОГА
+    if(fAlarm) 
+    {
       LED_ON;
-      if(fStop) {
-        usart0_write_str("BUT S=0\r");
-        fStop = 0;
-      }
-      else {
-        usart0_write_str("BUT S=1\r");
-        fStop = 1;
-      }
+      eStopOld = eStop;
+      eStop = STOP;
+      fStatusAlarmOld = 1;
       
-      if(!(fStop)){
-          usart0_write_str("-MOVE-\r");
+      //Если захотим, то остановим цикл двигателя, в тревоге, по кнопке навсегда.
+      if(GetIrStatus() || GetButStatus())
+      {
+        eStopOld = STOP;  //Остановим состояния двигателя, чтоб он не запустился самостоятельно.
+        for(uint8_t i=0; i<4; i++) {
+          LED_TOGGLE;
+          BUZ_TOGGLE;
+          _delay_ms(500);
+          __watchdog_reset();		//Reset WATCHDOG.
+        }
+        BUZ_OFF;
       }
-      else {
-          usart0_write_str("-STOP-\r");
-      }
-      
-      for(uint8_t i=0; i<50; i++) {
-        LED_TOGGLE;
-          _delay_ms(50);
-           __watchdog_reset();		//Reset WATCHDOG.
-      }
-       LED_OFF;
-      
-      while( GetButStatus() ) {
-           __watchdog_reset();		//Reset WATCHDOG.
-      }
-      
-    }
-       
-    if(fAlarm) {
-      fStopOld = fStop;
-      fStop = 1;
       LED_ON;
     }
-    else {
+    else 
+ //ЕСЛИ ТРЕВОГИ НЕТ     
+    {
       LED_OFF;
-    }
-    
-    if(fAlarm < 0) {
-       BUZ_ON;
-    }
-    else {
-      BUZ_OFF;
-    }
+      //Проверим можно ли запустить двигатель после перегрева.
+      if(fStatusAlarmOld) {
+        fStatusAlarmOld = 0;
+        eStop = eStopOld;
+        if(eStop == MOVE) {
+          
+        }
+      }
       
+      //Обработчик управления с кнопки двигателем.
+      if(GetIrStatus() || GetButStatus())
+      {
+          LED_ON;
+          if(eStop) {
+            usart0_write_str("-MOVE BUT-\r");
+            eStop = MOVE;
+          }
+          else {
+            usart0_write_str("-STOP BUT-\r");
+            eStop = STOP;
+          }
+          
+          for(uint8_t i=0; i<50; i++) {
+            LED_TOGGLE;
+              _delay_ms(50);
+               __watchdog_reset();		//Reset WATCHDOG.
+          }
+           LED_OFF;
+          
+          while( GetButStatus() ) {
+               __watchdog_reset();		//Reset WATCHDOG.
+          }
+          
+        }
+      
+    }
     
   }
   
 }
 
+//Таймер обработки датчика температуры DS12B12.
 #pragma vector=TIMER1_COMPA_vect
 __interrupt void TIMER1_COMPA(void)
 {
@@ -173,6 +198,7 @@ __interrupt void TIMER1_COMPA(void)
   
   if(StepConverts == 0) {
    if(DS18B20_Start_Converts()){
+     usart0_write_str("ERROR\r");
      fAlarm = -1;
      return;
    }
@@ -186,7 +212,7 @@ __interrupt void TIMER1_COMPA(void)
       iTemperature = atoi(strTemperature);
       StepConverts = 0;
 
-      if(iTemperature <= 0) {
+      if(iTemperature <= 0) { //Генерим ошибку датчика если температура меньше либо равно нулю.
         fAlarm = -1;
       }
       else {
@@ -194,18 +220,18 @@ __interrupt void TIMER1_COMPA(void)
       }
       
       if( (iTemperature >= MAX_TEMPERATUR) && (fAlarm>=0) ){
-        fAlarm = 1;
+        fAlarm = 1;    //Генерим Тревогу по перегреву двигателя.
       }
       
       if( (iTemperature < MAX_TEMPERATUR - DELTA_TEMPERATUR) && (fAlarm>0) ) {
-        fAlarm = 0;
+        fAlarm = 0;   //Сбрасываем Тревогу по возвращению температуры двигателя в нормальный предел.
       }
       
-      if(fAlarm>0) {
-        usart0_write_str("-ALARM-\r");
+      if(fAlarm > 0) {
+        usart0_write_str("-STOP ALARM-\r");
       }
-      if(fAlarm<0) {
-         usart0_write_str("ERROR\r");
+      if(fAlarm < 0) {
+         usart0_write_str("-STOP ERROR-\r");
       }
 
       return;
@@ -228,3 +254,14 @@ __interrupt void adc_my(void)
   StartConvAdc();
 }
 */
+
+void BuzzerHandler(void)
+{
+    //Включаем зуммер в случае ошибки работы датчика температуры.
+    if(fAlarm < 0) {
+       BUZ_ON;
+    }
+    else {
+      BUZ_OFF;
+    }
+}

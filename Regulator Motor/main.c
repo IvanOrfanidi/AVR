@@ -10,7 +10,8 @@
   #define PORT_BUZ	PORTD
   #define PORT_LED	PORTB
   #define LED 	        (1<<PB0)
-  #define BUT		(1<<PC2)
+  #define BUT1		(1<<PC2)
+  #define BUT2		(1<<PD0)
   #define IR            (1<<PC4)
   #define PIN_BUT	PINC
   #define BUZ1		(1<<PD4)
@@ -25,17 +26,18 @@
   #define BUZ_OFF   PORTD &= ~0x18
   #define BUZ_TOGGLE  PORTD ^= 0x18
 
-  #define RELAY_OFF  PORTD |= RELAY
-  #define RELAY_ON   PORTD &= ~RELAY
+  #define RELAY_OFF  PORTD &= ~RELAY
+  #define RELAY_ON   PORTD |= RELAY
 
-  #define GetIrStatus() (!(PIND & (1<<PD0)))
-  #define GetButStatus() (!(PIN_BUT & BUT))
+  #define GetIrStatus() (!(PIND & BUT2))
+  #define GetButStatus() (!(PIN_BUT & BUT1))
+  #define GetRelayStatus() (!(PIND & RELAY))
 
   #define StartConvAdc() ADCSR |= (1<<ADSC)  
 
 
-  #define MAX_TEMPERATUR      330   //Максимальная температура двигателя при котором сгенериться ALARM.
-  #define DELTA_TEMPERATUR    30    //Дельта на охлаждения двигателя при котором сбросится ALARM.
+  #define MAX_TEMPERATUR      30 * 10   //Максимальная температура двигателя при котором сгенериться ALARM.
+  #define DELTA_TEMPERATUR    3 *10    //Дельта на охлаждения двигателя при котором сбросится ALARM.
 
 typedef enum STATUS_DRIVE {
   MOVE = 0,
@@ -60,12 +62,12 @@ void Init(void)
   ////////////////
 
   // Init Port C //
-  PORTC|= BUT;
+  PORTC|= BUT1;
   /////////////////
 
   // Init Port D //
   DDRD = BUZ1 | BUZ2 | RELAY;
-  PORT_BUZ = 0;
+  PORT_BUZ = BUT2;
   
   //Analog Comparator initialization.
   ACSR|=(1<<ACD); //Disable Comparator.
@@ -125,21 +127,36 @@ int main( void )
     if(fAlarm) 
     {
       LED_ON;
-      eStopOld = eStop;
+      if(!(fStatusAlarmOld))
+      {
+        fStatusAlarmOld = 1;
+        eStopOld = (STATUS_DRIVE)GetRelayStatus();
+        if(eStopOld == MOVE) {
+          usart0_write_str("-NEXT STEP MOVE-\r");
+        }
+        else {
+           usart0_write_str("-NEXT STEP STOP-\r");
+        }
+      }
       eStop = STOP;
-      fStatusAlarmOld = 1;
+      RELAY_OFF;
       
       //Если захотим, то остановим цикл двигателя, в тревоге, по кнопке навсегда.
       if(GetIrStatus() || GetButStatus())
       {
-        eStopOld = STOP;  //Остановим состояния двигателя, чтоб он не запустился самостоятельно.
-        for(uint8_t i=0; i<4; i++) {
-          LED_TOGGLE;
-          BUZ_TOGGLE;
-          _delay_ms(500);
-          __watchdog_reset();		//Reset WATCHDOG.
+         _delay_ms(5); //Предотвращаем дребезг контактов.
+         if(GetIrStatus() || GetButStatus())
+         {
+           usart0_write_str("-NEXT STEP STOP BUT-\r");
+            eStopOld = STOP;  //Остановим состояния двигателя, чтоб он не запустился самостоятельно.
+            for(uint8_t i=0; i<4; i++) {
+              LED_TOGGLE;
+              BUZ_TOGGLE;
+              _delay_ms(500);
+              __watchdog_reset();		//Reset WATCHDOG.
+            }
+          BUZ_OFF;
         }
-        BUZ_OFF;
       }
       LED_ON;
     }
@@ -152,34 +169,44 @@ int main( void )
         fStatusAlarmOld = 0;
         eStop = eStopOld;
         if(eStop == MOVE) {
-          
+          RELAY_ON;
+          usart0_write_str("-MOVE CONTINUATION-\r");
+        }
+        else {
+          usart0_write_str("-STOP CONTINUATION-\r");
+          RELAY_OFF;
         }
       }
       
       //Обработчик управления с кнопки двигателем.
       if(GetIrStatus() || GetButStatus())
       {
-          LED_ON;
-          if(eStop) {
-            usart0_write_str("-MOVE BUT-\r");
-            eStop = MOVE;
+        _delay_ms(5);     //Предотвращаем дребезг контактов.
+          if(GetIrStatus() || GetButStatus())
+          {
+            LED_ON;
+            if(eStop == STOP) {
+              usart0_write_str("-MOVE BUT1-\r");
+              eStop = MOVE;
+              RELAY_ON;
+            }
+            else {
+              usart0_write_str("-STOP BUT1-\r");
+              eStop = STOP;
+              RELAY_OFF;
+            }
+            
+            for(uint8_t i=0; i<50; i++) {
+              LED_TOGGLE;
+                _delay_ms(50);
+                 __watchdog_reset();		//Reset WATCHDOG.
+            }
+             LED_OFF;
+            
+            while( GetButStatus() ) {
+                 __watchdog_reset();		//Reset WATCHDOG.
+            }
           }
-          else {
-            usart0_write_str("-STOP BUT-\r");
-            eStop = STOP;
-          }
-          
-          for(uint8_t i=0; i<50; i++) {
-            LED_TOGGLE;
-              _delay_ms(50);
-               __watchdog_reset();		//Reset WATCHDOG.
-          }
-           LED_OFF;
-          
-          while( GetButStatus() ) {
-               __watchdog_reset();		//Reset WATCHDOG.
-          }
-          
         }
       
     }
@@ -216,7 +243,7 @@ __interrupt void TIMER1_COMPA(void)
         fAlarm = -1;
       }
       else {
-        fAlarm = 1;
+        //fAlarm = 1;
       }
       
       if( (iTemperature >= MAX_TEMPERATUR) && (fAlarm>=0) ){

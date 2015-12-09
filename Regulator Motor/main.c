@@ -17,6 +17,8 @@
   #define BUZ1		(1<<PD4)
   #define BUZ2		(1<<PD3)
   #define RELAY         (1<<PD2)
+  #define SEALED        (1<<PC4)
+  #define PIN_SEALED	PINC
 
   #define LED_ON      PORT_LED |= LED
   #define LED_OFF     PORT_LED &= ~LED
@@ -32,12 +34,16 @@
   #define GetIrStatus() (!(PIND & BUT2))
   #define GetButStatus() (!(PIN_BUT & BUT1))
   #define GetRelayStatus() (!(PIND & RELAY))
+  #define GetSealedStatus() (PIN_SEALED & SEALED)
 
   #define StartConvAdc() ADCSR |= (1<<ADSC)  
 
-
   #define MAX_TEMPERATUR      30 * 10   //Максимальная температура двигателя при котором сгенериться ALARM.
   #define DELTA_TEMPERATUR    3 *10    //Дельта на охлаждения двигателя при котором сбросится ALARM.
+
+  #define TIME_BOUNCE_BUT 9
+  #define TIMEOUT_STOP_ALARM  1000000
+  uint32_t ulTimeoutStopAlarm = TIMEOUT_STOP_ALARM;
 
 typedef enum STATUS_DRIVE {
   MOVE = 0,
@@ -62,7 +68,7 @@ void Init(void)
   ////////////////
 
   // Init Port C //
-  PORTC|= BUT1;
+  PORTC|= BUT1 | SEALED;
   /////////////////
 
   // Init Port D //
@@ -104,6 +110,7 @@ int main( void )
 {
   __disable_interrupt();
   STATUS_DRIVE eStopOld;
+  uint8_t LedMig;
   uint8_t fStatusAlarmOld = 0;
   Init();
   
@@ -121,7 +128,7 @@ int main( void )
   {
     __watchdog_reset();		//Reset WATCHDOG.
     
-   BuzzerHandler();     //Обработчик зуммера.
+    BuzzerHandler();     //Обработчик зуммера.
    
 //ЕСЛИ ЕСТЬ ТРЕВОГА
     if(fAlarm) 
@@ -139,25 +146,53 @@ int main( void )
         }
       }
       eStop = STOP;
+      ulTimeoutStopAlarm = TIMEOUT_STOP_ALARM;
+      while(GetSealedStatus() && (!GetRelayStatus()) ) {
+        LedMig = 1;
+         __watchdog_reset();		//Reset WATCHDOG.
+         ulTimeoutStopAlarm--;
+         if(!(ulTimeoutStopAlarm)) {
+              break;
+         }
+      }
       RELAY_OFF;
       
-      //Если захотим, то остановим цикл двигателя, в тревоге, по кнопке навсегда.
-      if(GetIrStatus() || GetButStatus())
+      if(!(ulTimeoutStopAlarm)) {
+        fAlarm = -2;
+        LedMig = 0;
+      }
+      
+      if(LedMig) {
+        LED_OFF;
+        LedMig = 0;
+        _delay_ms(150);
+        LED_ON;
+      }
+      
+
+      if(fAlarm > 0)
       {
-         _delay_ms(5); //Предотвращаем дребезг контактов.
-         if(GetIrStatus() || GetButStatus())
-         {
-           usart0_write_str("-NEXT STEP STOP BUT-\r");
-            eStopOld = STOP;  //Остановим состояния двигателя, чтоб он не запустился самостоятельно.
-            for(uint8_t i=0; i<4; i++) {
-              LED_TOGGLE;
-              BUZ_TOGGLE;
-              _delay_ms(500);
+        //Если захотим, то остановим цикл двигателя, в тревоге, по кнопке навсегда.
+        if(GetIrStatus() || GetButStatus())
+        {
+           _delay_ms(TIME_BOUNCE_BUT); //Предотвращаем дребезг контактов.
+           if(GetIrStatus() || GetButStatus())
+           {
+             usart0_write_str("-NEXT STEP STOP BUT-\r");
+              eStopOld = STOP;  //Остановим состояния двигателя, чтоб он не запустился самостоятельно.
+              LED_OFF;
+              BUZ_ON;
+              _delay_ms(100);
               __watchdog_reset();		//Reset WATCHDOG.
-            }
-          BUZ_OFF;
+              BUZ_OFF;
+              LED_ON;
+          }
         }
       }
+      else {
+        eStopOld = STOP;
+      }
+      
       LED_ON;
     }
     else 
@@ -174,14 +209,27 @@ int main( void )
         }
         else {
           usart0_write_str("-STOP CONTINUATION-\r");
+          /*
+          ulTimeoutStopAlarm = TIMEOUT_STOP_ALARM;
+          while(GetSealedStatus()) {
+            __watchdog_reset();		//Reset WATCHDOG.
+            ulTimeoutStopAlarm--;
+            if(!(ulTimeoutStopAlarm)) {
+               break;
+            }
+          }
           RELAY_OFF;
+          if(!(ulTimeoutStopAlarm)) {
+            fAlarm = -2;
+          }
+          */
         }
       }
       
       //Обработчик управления с кнопки двигателем.
-      if(GetIrStatus() || GetButStatus())
+      if( (GetIrStatus() || GetButStatus()) && (!(fAlarm)) )
       {
-        _delay_ms(5);     //Предотвращаем дребезг контактов.
+        _delay_ms(TIME_BOUNCE_BUT);     //Предотвращаем дребезг контактов.
           if(GetIrStatus() || GetButStatus())
           {
             LED_ON;
@@ -193,18 +241,40 @@ int main( void )
             else {
               usart0_write_str("-STOP BUT1-\r");
               eStop = STOP;
+              ulTimeoutStopAlarm = TIMEOUT_STOP_ALARM;
+              while(GetSealedStatus() && (!GetRelayStatus())) {
+                LedMig = 1;
+                __watchdog_reset();		//Reset WATCHDOG.
+                ulTimeoutStopAlarm--;
+                if(!(ulTimeoutStopAlarm)) {
+                  break;
+                }
+              }
+              
               RELAY_OFF;
+              if(!(ulTimeoutStopAlarm)) {
+                fAlarm = -2;
+                LedMig = 0;
+              }
+              
+              if(LedMig) {
+                LED_OFF;
+                LedMig = 0;
+                _delay_ms(150);
+                LED_ON;
+              }
+
             }
-            
-            for(uint8_t i=0; i<50; i++) {
-              LED_TOGGLE;
-                _delay_ms(50);
-                 __watchdog_reset();		//Reset WATCHDOG.
-            }
-             LED_OFF;
-            
-            while( GetButStatus() ) {
-                 __watchdog_reset();		//Reset WATCHDOG.
+            if(!(fAlarm)) {
+              for(uint8_t i=0; i<50; i++) {
+                LED_TOGGLE;
+                  _delay_ms(50);
+                   __watchdog_reset();		//Reset WATCHDOG.
+              }
+               LED_OFF;
+              
+              while( GetButStatus() )  __watchdog_reset();
+              
             }
           }
         }

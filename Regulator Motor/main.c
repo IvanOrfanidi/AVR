@@ -137,7 +137,7 @@ int main( void )
       if(!(fStatusAlarmOld))
       {
         fStatusAlarmOld = 1;
-        eStopOld = (STATUS_DRIVE)GetRelayStatus();
+        eStopOld = (STATUS_DRIVE)(!(GetRelayStatus())); //ѕолучаем текущий статус работы двигател€.
         if(eStopOld == MOVE) {
           usart0_write_str("-NEXT STEP MOVE-\r");
         }

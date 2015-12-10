@@ -38,8 +38,8 @@
 
   #define StartConvAdc() ADCSR |= (1<<ADSC)  
 
-  #define MAX_TEMPERATUR      30 * 10   //Максимальная температура двигателя при котором сгенериться ALARM.
-  #define DELTA_TEMPERATUR    3 *10    //Дельта на охлаждения двигателя при котором сбросится ALARM.
+  #define MAX_TEMPERATUR      60 * 10   //Максимальная температура двигателя при котором сгенериться ALARM.
+  #define DELTA_TEMPERATUR    20 *10    //Дельта на охлаждения двигателя при котором сбросится ALARM.
 
   #define TIME_BOUNCE_BUT 9
   #define TIMEOUT_STOP_ALARM  1000000
@@ -137,7 +137,7 @@ int main( void )
       if(!(fStatusAlarmOld))
       {
         fStatusAlarmOld = 1;
-        eStopOld = (STATUS_DRIVE)(!(GetRelayStatus())); //Получаем текущий статус работы двигателя.
+        eStopOld = (STATUS_DRIVE)(GetRelayStatus()); //Получаем текущий статус работы двигателя.
         if(eStopOld == MOVE) {
           usart0_write_str("-NEXT STEP MOVE-\r");
         }
@@ -202,27 +202,14 @@ int main( void )
       //Проверим можно ли запустить двигатель после перегрева.
       if(fStatusAlarmOld) {
         fStatusAlarmOld = 0;
-        eStop = eStopOld;
-        if(eStop == MOVE) {
+        if(eStopOld == MOVE) {
           RELAY_ON;
+          eStop = MOVE;
           usart0_write_str("-MOVE CONTINUATION-\r");
         }
         else {
+          eStop = STOP;
           usart0_write_str("-STOP CONTINUATION-\r");
-          /*
-          ulTimeoutStopAlarm = TIMEOUT_STOP_ALARM;
-          while(GetSealedStatus()) {
-            __watchdog_reset();		//Reset WATCHDOG.
-            ulTimeoutStopAlarm--;
-            if(!(ulTimeoutStopAlarm)) {
-               break;
-            }
-          }
-          RELAY_OFF;
-          if(!(ulTimeoutStopAlarm)) {
-            fAlarm = -2;
-          }
-          */
         }
       }
       

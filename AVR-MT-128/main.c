@@ -1,4 +1,8 @@
 
+#ifndef ENABLE_BIT_DEFINITIONS
+  #define   ENABLE_BIT_DEFINITIONS  
+#endif
+
 #include <ioavr.h>
 #include <intrinsics.h>
 

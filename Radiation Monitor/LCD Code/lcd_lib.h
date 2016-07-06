@@ -8,9 +8,6 @@
 #include <ioavr.h>
 #include <intrinsics.h>
 
-
-#define   F_CPU 14745600UL
-
 #define   _delay_ms(temp)(__delay_cycles((temp * F_CPU)/1000));
 #define   _delay_us(temp)(__delay_cycles((temp * F_CPU)/1000000UL));
 

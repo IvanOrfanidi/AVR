@@ -4,6 +4,8 @@
 #include <intrinsics.h>
 
 #include "lcd_lib.h"
+#include "main.h"
+
 
 //макросы для работы с битами
 #define FLAG_BF 7
@@ -18,6 +20,7 @@ void LCD_WriteComInit(unsigned char data)
   tmp |= (data & 0xF0);
   PORT_DATA = tmp;		//вывод старшей тетрады 
 #else
+  unsigned char data; 
   PORT_DATA = data;		//вывод данных на шину индикатора 
 #endif  
   SetBit(PORT_SIG_EN, EN);	        //установка E в 1

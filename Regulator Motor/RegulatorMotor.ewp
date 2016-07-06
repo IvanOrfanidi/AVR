@@ -10,9 +10,9 @@
     <debug>1</debug>
     <settings>
       <name>General</name>
-      <archiveVersion>10</archiveVersion>
+      <archiveVersion>12</archiveVersion>
       <data>
-        <version>8</version>
+        <version>10</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -126,18 +126,13 @@
           <state>512</state>
         </option>
         <option>
-          <name>New Variant Processor</name>
-          <version>32</version>
-          <state>119</state>
-        </option>
-        <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
           <state>1</state>
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/EC++</state>
+          <state>Use the normal configuration of the C/C++</state>
           <state>runtime library. No locale interface,</state>
           <state>C locale, no file descriptor support,</state>
           <state>no multibytes in printf and scanf, and</state>
@@ -153,21 +148,21 @@
         </option>
         <option>
           <name>Input variant</name>
-          <version>0</version>
-          <state>0</state>
+          <version>36</version>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>Full formatting.</state>
+          <state>Full formatting</state>
         </option>
         <option>
           <name>Output variant</name>
-          <version>0</version>
-          <state>4</state>
+          <version>36</version>
+          <state>8</state>
         </option>
         <option>
           <name>Output description</name>
-          <state> No specifier a or A, no specifier n, no float or long long, no flags.</state>
+          <state>No specifier a, A, no specifier n, no float nor long long, no flags, without multibytes.</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
@@ -220,13 +215,25 @@
           <version>0</version>
           <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
         </option>
+        <option>
+          <name>GenDeviceSelectMenu</name>
+          <state>m8a	ATmega8A</state>
+        </option>
+        <option>
+          <name>OGProductVersion</name>
+          <state>6.80.1.1057</state>
+        </option>
+        <option>
+          <name>OGLastSavedByProductVersion</name>
+          <state>6.80.1.1057</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>ICCAVR</name>
-      <archiveVersion>5</archiveVersion>
+      <archiveVersion>6</archiveVersion>
       <data>
-        <version>14</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -327,15 +334,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>CCOptSizeSpeed</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>CCOptimization</name>
-          <version>1</version>
-          <state>4</state>
-        </option>
-        <option>
           <name>CCAllowList</name>
           <version>3</version>
           <state>111111</state>
@@ -418,11 +416,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>CCStdIncludePaths</name>
-          <state>$TOOLKIT_DIR$\INC\</state>
-          <state>$TOOLKIT_DIR$\INC\DLIB\</state>
-        </option>
-        <option>
           <name>CCEepromSize</name>
           <state>0</state>
         </option>
@@ -431,21 +424,8 @@
           <state>1</state>
         </option>
         <option>
-          <name>CCOptSizeSpeedSlave</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>CCOptimizationSlave</name>
-          <version>1</version>
-          <state>4</state>
-        </option>
-        <option>
           <name>CCOutputFile</name>
           <state>$FILE_BNAME$.r90</state>
-        </option>
-        <option>
-          <name>CCLangSelect</name>
-          <state>0</state>
         </option>
         <option>
           <name>CompilerMisraOverride</name>
@@ -485,13 +465,54 @@
           <version>0</version>
           <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
         </option>
+        <option>
+          <name>IccLang</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccCDialect</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccCppDialect</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccAllowVLA</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccCppInlineSemantics</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccStaticDestr</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccFloatSemantics</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCOptStrategy</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CCOptLevel</name>
+          <state>3</state>
+        </option>
+        <option>
+          <name>CCOptLevelSlave</name>
+          <state>3</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>AAVR</name>
-      <archiveVersion>4</archiveVersion>
+      <archiveVersion>5</archiveVersion>
       <data>
-        <version>10</version>
+        <version>11</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -667,6 +688,10 @@
           <name>AsmOutputFile</name>
           <state>$FILE_BNAME$.r90</state>
         </option>
+        <option>
+          <name>AStdIncCheck</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -675,6 +700,7 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
+        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -692,9 +718,9 @@
     </settings>
     <settings>
       <name>XLINK</name>
-      <archiveVersion>2</archiveVersion>
+      <archiveVersion>3</archiveVersion>
       <data>
-        <version>13</version>
+        <version>16</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -712,7 +738,7 @@
         </option>
         <option>
           <name>FormatVariant</name>
-          <version>8</version>
+          <version>9</version>
           <state>2</state>
         </option>
         <option>
@@ -895,7 +921,7 @@
         </option>
         <option>
           <name>ExtraFormatVariant</name>
-          <version>8</version>
+          <version>9</version>
           <state>2</state>
         </option>
         <option>
@@ -954,6 +980,51 @@
           <name>CrcInitialValue</name>
           <state>0x00</state>
         </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogInputFiles</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogModuleSelection</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogPrintfScanf</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogSegmentSelection</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogStackDepth</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkStackUsageEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkControlFiles</name>
+          <state></state>
+        </option>
+        <option>
+          <name>XlinkCallGraphFileEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkCallGraphFileName</name>
+          <state>$LIST_DIR$\$PROJ_FNAME$.call_graph.cgx</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -991,9 +1062,9 @@
     <debug>0</debug>
     <settings>
       <name>General</name>
-      <archiveVersion>10</archiveVersion>
+      <archiveVersion>12</archiveVersion>
       <data>
-        <version>8</version>
+        <version>10</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1107,11 +1178,6 @@
           <state>512</state>
         </option>
         <option>
-          <name>New Variant Processor</name>
-          <version>32</version>
-          <state>125</state>
-        </option>
-        <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
           <state>4</state>
@@ -1130,8 +1196,8 @@
         </option>
         <option>
           <name>Input variant</name>
-          <version>0</version>
-          <state>1</state>
+          <version>36</version>
+          <state>3</state>
         </option>
         <option>
           <name>Input description</name>
@@ -1139,8 +1205,8 @@
         </option>
         <option>
           <name>Output variant</name>
-          <version>0</version>
-          <state>1</state>
+          <version>36</version>
+          <state>3</state>
         </option>
         <option>
           <name>Output description</name>
@@ -1197,13 +1263,25 @@
           <version>0</version>
           <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
         </option>
+        <option>
+          <name>GenDeviceSelectMenu</name>
+          <state>m88	ATmega88</state>
+        </option>
+        <option>
+          <name>OGProductVersion</name>
+          <state>6.80.1.1057</state>
+        </option>
+        <option>
+          <name>OGLastSavedByProductVersion</name>
+          <state></state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>ICCAVR</name>
-      <archiveVersion>5</archiveVersion>
+      <archiveVersion>6</archiveVersion>
       <data>
-        <version>14</version>
+        <version>17</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1304,15 +1382,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>CCOptSizeSpeed</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>CCOptimization</name>
-          <version>1</version>
-          <state>4</state>
-        </option>
-        <option>
           <name>CCAllowList</name>
           <version>3</version>
           <state>111111</state>
@@ -1395,11 +1464,6 @@
           <state>0</state>
         </option>
         <option>
-          <name>CCStdIncludePaths</name>
-          <state>$TOOLKIT_DIR$\INC\</state>
-          <state>$TOOLKIT_DIR$\INC\CLIB\</state>
-        </option>
-        <option>
           <name>CCEepromSize</name>
           <state>0</state>
         </option>
@@ -1408,21 +1472,8 @@
           <state>1</state>
         </option>
         <option>
-          <name>CCOptSizeSpeedSlave</name>
-          <state>0</state>
-        </option>
-        <option>
-          <name>CCOptimizationSlave</name>
-          <version>1</version>
-          <state>4</state>
-        </option>
-        <option>
           <name>CCOutputFile</name>
           <state>$FILE_BNAME$.r90</state>
-        </option>
-        <option>
-          <name>CCLangSelect</name>
-          <state>0</state>
         </option>
         <option>
           <name>CompilerMisraOverride</name>
@@ -1462,13 +1513,54 @@
           <version>0</version>
           <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
         </option>
+        <option>
+          <name>IccLang</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccCDialect</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccCppDialect</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccAllowVLA</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccCppInlineSemantics</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IccStaticDestr</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IccFloatSemantics</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCOptStrategy</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CCOptLevel</name>
+          <state>3</state>
+        </option>
+        <option>
+          <name>CCOptLevelSlave</name>
+          <state>3</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>AAVR</name>
-      <archiveVersion>4</archiveVersion>
+      <archiveVersion>5</archiveVersion>
       <data>
-        <version>10</version>
+        <version>11</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1644,6 +1736,10 @@
           <name>AsmOutputFile</name>
           <state>$FILE_BNAME$.r90</state>
         </option>
+        <option>
+          <name>AStdIncCheck</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1652,6 +1748,7 @@
       <data>
         <extensions></extensions>
         <cmdline></cmdline>
+        <hasPrio>0</hasPrio>
       </data>
     </settings>
     <settings>
@@ -1669,9 +1766,9 @@
     </settings>
     <settings>
       <name>XLINK</name>
-      <archiveVersion>2</archiveVersion>
+      <archiveVersion>3</archiveVersion>
       <data>
-        <version>13</version>
+        <version>16</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1689,7 +1786,7 @@
         </option>
         <option>
           <name>FormatVariant</name>
-          <version>8</version>
+          <version>9</version>
           <state>2</state>
         </option>
         <option>
@@ -1871,7 +1968,7 @@
         </option>
         <option>
           <name>ExtraFormatVariant</name>
-          <version>8</version>
+          <version>9</version>
           <state>2</state>
         </option>
         <option>
@@ -1930,6 +2027,51 @@
           <name>CrcInitialValue</name>
           <state>0x00</state>
         </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogInputFiles</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogModuleSelection</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogPrintfScanf</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogSegmentSelection</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkLogStackDepth</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkStackUsageEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkControlFiles</name>
+          <state></state>
+        </option>
+        <option>
+          <name>XlinkCallGraphFileEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>XlinkCallGraphFileName</name>
+          <state>$LIST_DIR$\$PROJ_FNAME$.call_graph.cgx</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1984,7 +2126,7 @@
       <settings>
         <name>ICCAVR</name>
         <data>
-          <version>14</version>
+          <version>17</version>
           <wantNonLocal>0</wantNonLocal>
           <debug>1</debug>
           <option>
@@ -2080,15 +2222,6 @@
             <state>0</state>
           </option>
           <option>
-            <name>CCOptSizeSpeed</name>
-            <state>0</state>
-          </option>
-          <option>
-            <name>CCOptimization</name>
-            <version>1</version>
-            <state>2</state>
-          </option>
-          <option>
             <name>CCAllowList</name>
             <version>3</version>
             <state>000000</state>
@@ -2171,11 +2304,6 @@
             <state>0</state>
           </option>
           <option>
-            <name>CCStdIncludePaths</name>
-            <state>$TOOLKIT_DIR$\INC\</state>
-            <state>$TOOLKIT_DIR$\INC\DLIB\</state>
-          </option>
-          <option>
             <name>CCEepromSize</name>
             <state>0</state>
           </option>
@@ -2184,21 +2312,8 @@
             <state>1</state>
           </option>
           <option>
-            <name>CCOptSizeSpeedSlave</name>
-            <state>0</state>
-          </option>
-          <option>
-            <name>CCOptimizationSlave</name>
-            <version>1</version>
-            <state>2</state>
-          </option>
-          <option>
             <name>CCOutputFile</name>
             <state>$FILE_BNAME$.r90</state>
-          </option>
-          <option>
-            <name>CCLangSelect</name>
-            <state>0</state>
           </option>
           <option>
             <name>CompilerMisraOverride</name>
@@ -2237,6 +2352,47 @@
             <name>CompilerMisraRules98</name>
             <version>0</version>
             <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
+          </option>
+          <option>
+            <name>IccLang</name>
+            <state>0</state>
+          </option>
+          <option>
+            <name>IccCDialect</name>
+            <state>1</state>
+          </option>
+          <option>
+            <name>IccCppDialect</name>
+            <state>1</state>
+          </option>
+          <option>
+            <name>IccAllowVLA</name>
+            <state>0</state>
+          </option>
+          <option>
+            <name>IccCppInlineSemantics</name>
+            <state>0</state>
+          </option>
+          <option>
+            <name>IccStaticDestr</name>
+            <state>1</state>
+          </option>
+          <option>
+            <name>IccFloatSemantics</name>
+            <state>0</state>
+          </option>
+          <option>
+            <name>CCOptStrategy</name>
+            <version>0</version>
+            <state>1</state>
+          </option>
+          <option>
+            <name>CCOptLevel</name>
+            <state>1</state>
+          </option>
+          <option>
+            <name>CCOptLevelSlave</name>
+            <state>1</state>
           </option>
         </data>
       </settings>

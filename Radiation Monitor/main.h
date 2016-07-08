@@ -15,7 +15,7 @@
     #include <inavr.h> 
     #include <stdbool.h> 
 
-    //#include "USART.h"
+    #include "USART.h"
 
     #include "lcd_lib.h"
 

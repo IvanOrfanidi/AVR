@@ -797,7 +797,7 @@
         </option>
         <option>
           <name>XclFile</name>
-          <state>$TOOLKIT_DIR$\src\template\cfgm32a.xcl</state>
+          <state>$TOOLKIT_DIR$\src\template\cfgm32.xcl</state>
         </option>
         <option>
           <name>XclFileSlave</name>
@@ -2109,6 +2109,15 @@
     </file>
     <file>
       <name>$PROJ_DIR$\LCD Code\lcd_lib.h</name>
+    </file>
+  </group>
+  <group>
+    <name>USART</name>
+    <file>
+      <name>$PROJ_DIR$\USART.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\USART.h</name>
     </file>
   </group>
   <file>

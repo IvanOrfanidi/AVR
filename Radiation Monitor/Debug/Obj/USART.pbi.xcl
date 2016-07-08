@@ -1,4 +1,4 @@
-"C:\Home Project\AVR\Radiation Monitor\main.c"
+"C:\Home Project\AVR\Radiation Monitor\USART.c"
 -std=c99
 -ferror-limit=100
 -I

@@ -1,12 +1,12 @@
-"C:\Users\Administrator\Desktop\AVR\Radiation Monitor\LCD Code\lcd_lib.c"
+"C:\Home Project\AVR\Radiation Monitor\LCD Code\lcd_lib.c"
 -std=c99
 -ferror-limit=100
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\avr\INC\dlib
 -I
-C:\Users\Administrator\Desktop\AVR\Radiation Monitor
+C:\Home Project\AVR\Radiation Monitor
 -I
-C:\Users\Administrator\Desktop\AVR\Radiation Monitor\LCD Code
+C:\Home Project\AVR\Radiation Monitor\LCD Code
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\avr\inc
 -I
@@ -14,9 +14,9 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\avr\inc\dlib\c
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\avr\INC\dlib
 -I
-C:\Users\Administrator\Desktop\AVR\Radiation Monitor
+C:\Home Project\AVR\Radiation Monitor
 -I
-C:\Users\Administrator\Desktop\AVR\Radiation Monitor\LCD Code
+C:\Home Project\AVR\Radiation Monitor\LCD Code
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

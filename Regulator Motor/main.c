@@ -79,10 +79,10 @@ void Init(void)
   ACSR|=(1<<ACD); //Disable Comparator.
   
   //Timer1 initialization.
-  TCCR1B=(1<<CS12)|(0<<CS11)|(1<<CS10);	
+  TCCR1B = (1<<CS12)|(0<<CS11)|(1<<CS10);	
   //TCCR1B=(0<<CS12)|(0<<CS11)|(0<<CS10);	//Timer1 clock off.
-  OCR1A=7816;           //Interrupt 1 sec.
-  TIMSK|=(1<<OCIE1A);	//Interrupt Timer1 COMPA.
+  OCR1A = 7816;           //Interrupt 1 sec.
+  TIMSK |= (1<<OCIE1A);	//Interrupt Timer1 COMPA.
   ////////////////////////////////////////////////////////////////////
   
   
